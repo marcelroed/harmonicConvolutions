@@ -17,3 +17,5 @@ cifar10/
 *.jpg
 my_model/
 *.pkl
+
+**/.idea/

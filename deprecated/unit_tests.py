@@ -13,7 +13,7 @@ import harmonic_network_lite as hl
 
 def test_forward_pass_shape():
    """Convolve with random noise"""
-   for i in xrange(3,13):
+   for i in range(3,13):
       tf.reset_default_graph()
       x = tf.placeholder(tf.float32, [6,i,i,1,1,4])
       y = hl.conv2d(x, 5, 3, name='conv_forward_pass_shape')
@@ -64,13 +64,13 @@ def test_forward_invariance_90():
    Y = np.squeeze(Y)
    Inv = np.squeeze(Inv)
    # Look at the difference in order 0 vectors...should be EXACTLY 0
-   for i in xrange(4):
-      for j in xrange(i):
+   for i in range(4):
+      for j in range(i):
          assert np.amax(np.abs(Y[j,0,:] - Y[i,0,:])) < 1e-5
    print
    # Look at the difference in magnitudes
-   for i in xrange(4):
-      for j in xrange(i):
+   for i in range(4):
+      for j in range(i):
          assert np.amax(np.abs(Inv[j,:] - Inv[i,:])) < 1e-5
 
 

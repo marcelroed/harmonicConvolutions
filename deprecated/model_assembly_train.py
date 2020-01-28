@@ -179,7 +179,7 @@ def build_feed_dict(opt, batch, tf_nodes, is_training):
 	batch_x, batch_y = batch
 	fd = {tf_nodes['learning_rate'] : opt['lr'], tf_nodes['train_phase'] : is_training}
 	bs = opt['batch_size']
-	for g in xrange(len(opt['deviceIdxs'])):
+	for g in range(len(opt['deviceIdxs'])):
 		fd[tf_nodes['io']['x'][g]] = batch_x[g*bs:(g+1)*bs,:]
 		fd[tf_nodes['io']['y'][g]] = batch_y[g*bs:(g+1)*bs]
 	return fd
@@ -426,7 +426,7 @@ def loop_queue_run(opt, data, tf_nodes, sess, mode, step):
 		is_testing = True
 		num_its = data['test_items']
 	#this rounding here is potentially problematic
-	for i in xrange(int(num_its / opt['batch_size']) - 1):
+	for i in range(int(num_its / opt['batch_size']) - 1):
 		fd = {tf_nodes['learning_rate'] : opt['lr'], tf_nodes['train_phase'] : is_training,
 		tf_nodes['test_phase'] : is_testing}
 		if mode == 'train':

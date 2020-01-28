@@ -14,7 +14,7 @@ folder_name = 'nate_5_'
 im0 = imread('./nate_experiments/activations/{:s}/{:04d}.jpg'.format(folder_name,0))/255.
 error = []
 errorm = []
-for i in xrange(360):
+for i in range(360):
 	fname = './nate_experiments/activations/{:s}/{:04d}.jpg'.format(folder_name,i)
 	im = imread(fname)/255.
 

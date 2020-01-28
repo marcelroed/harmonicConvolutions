@@ -44,7 +44,7 @@ def convert_write(X, Y, writer, tf_stuff):
     #so we add singleton dimensions as necessary 
     x_shape = []
     y_shape = []
-    for i in xrange(3):
+    for i in range(3):
         if len(X.shape) <= i:
             x_shape.append(1)
         else:
@@ -65,7 +65,7 @@ def convert_write(X, Y, writer, tf_stuff):
 
 def write_all_to_record(X, Y, writer):
     num_examples = X.shape[0]
-    for i in xrange(num_examples):
+    for i in range(num_examples):
         convert_write(X[i, :], Y[i], writer)
     writer.close()
 
@@ -145,7 +145,7 @@ def process_image_list(image_list, labels, writer_max_size, max_items_in_record,
     start = timeit.timeit()
     num_errors = 0
     num_grey_scale = 0
-    for i in xrange(num_examples):
+    for i in range(num_examples):
         #if num_errors > 5:
         #    break
         idx = perm[i]

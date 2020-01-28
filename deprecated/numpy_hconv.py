@@ -46,10 +46,10 @@ def get_weights_dict(shape, max_order, std_mult=0.4, n_rings=None, name='W'):
    dev: (default /cpu:0)
    """
    if isinstance(max_order, int):
-      orders = xrange(-max_order, max_order+1)
+      orders = range(-max_order, max_order+1)
    else:
       diff = max_order[1]-max_order[0]
-      orders = xrange(-diff, diff+1)
+      orders = range(-diff, diff+1)
    weights_dict = {}
    for i in orders:
       if n_rings is None:
@@ -63,10 +63,10 @@ def get_weights_dict(shape, max_order, std_mult=0.4, n_rings=None, name='W'):
 def get_phase_dict(n_in, n_out, max_order, name='b'):
    """Return a dict of phase offsets"""
    if isinstance(max_order, int):
-       orders = xrange(-max_order, max_order+1)
+       orders = range(-max_order, max_order+1)
    else:
        diff = max_order[1]-max_order[0]
-       orders = xrange(-diff, diff+1)
+       orders = range(-diff, diff+1)
    phase_dict = {}
    for i in orders:
        init = np.random.rand(1,1,n_in,n_out) * 2. *np.pi

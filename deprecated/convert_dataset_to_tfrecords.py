@@ -27,7 +27,7 @@ def convert_write(X, Y, writer, tf_stuff):
     #so we add singleton dimensions as necessary 
     x_shape = []
     y_shape = []
-    for i in xrange(3):
+    for i in range(3):
         if len(X.shape) <= i:
             x_shape.append(1)
         else:
@@ -48,7 +48,7 @@ def convert_write(X, Y, writer, tf_stuff):
 
 def write_all_to_record(X, Y, writer):
     num_examples = X.shape[0]
-    for i in xrange(num_examples):
+    for i in range(num_examples):
         convert_write(X[i, :], Y[i], writer)
     writer.close()
 
@@ -62,7 +62,7 @@ def write_all_to_records(X, Y, writer_base_name, max_items_in_record, shape):
     num_examples_in_current_writer = 0
     current_writer = tf.python_io.TFRecordWriter(writer_base_name + '_' + str(current_writer_idx) + '.tfrecords')
     perm = np.random.permutation(num_examples)
-    for i in xrange(num_examples):
+    for i in range(num_examples):
         if num_examples_in_current_writer >= max_items_in_record:
             print('Num examples written in file: ' + str(num_examples_in_current_writer))
             current_writer.close()

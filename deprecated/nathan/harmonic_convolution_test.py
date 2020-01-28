@@ -94,7 +94,7 @@ with tf.Session() as sess:
     global_init_op = tf.global_variables_initializer()
     local_init_op = tf.local_variables_initializer()
     sess.run([global_init_op, local_init_op])
-    for i in xrange(360):
+    for i in range(360):
         input_image = rotate(EMBEDDED, i, axes=(1,0), reshape=False, order=3)[np.newaxis,:,:,np.newaxis]
         real_output = sess.run(output_images, feed_dict={input_images: input_image})[0,:,:,0]
         real_output = rotate(real_output, -i, axes=(1,0), reshape=False, order=3) / 1.2
