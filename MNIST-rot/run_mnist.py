@@ -7,10 +7,12 @@ import sys
 import time
 import requests
 import zipfile
+
 sys.path.append('../')
 
 import numpy as np
 import tensorflow.compat.v1 as tf
+
 tf.disable_v2_behavior()
 
 from mnist_model import deep_mnist
@@ -21,7 +23,7 @@ def download2FileAndExtract(url, folder, fileName):
     add_folder(folder)
     zipFileName = folder + fileName
     request = requests.get(url)
-    with open(zipFileName, "wb") as f :
+    with open(zipFileName, "wb") as f:
         f.write(request.content)
     if not zipfile.is_zipfile(zipFileName):
         print('ERROR: ' + zipFileName + ' is not a valid zip file.')
@@ -30,7 +32,7 @@ def download2FileAndExtract(url, folder, fileName):
     wd = os.getcwd()
     os.chdir(folder)
 
-    archive = zipfile.ZipFile('.'+fileName, mode='r')
+    archive = zipfile.ZipFile('.' + fileName, mode='r')
     archive.extractall()
     archive.close()
     os.chdir(wd)
@@ -60,7 +62,6 @@ def settings(args):
     data['test_x'] = test['x']
     data['test_y'] = test['y']
 
-
     # Other options
     if args.default_settings:
         args.n_epochs = 200
@@ -73,7 +74,7 @@ def settings(args):
         args.filter_size = 5
         args.n_rings = 4
         args.n_filters = 8
-        args.display_step = len(data['train_x'])/46
+        args.display_step = len(data['train_x']) / 46
         args.is_classification = True
         args.dim = 28
         args.crop_shape = 0
@@ -105,6 +106,7 @@ def minibatcher(inputs, targets, batchsize, shuffle=False):
             excerpt = slice(start_idx, start_idx + batchsize)
         yield inputs[excerpt], targets[excerpt]
 
+
 def get_learning_rate(args, current, best, counter, learning_rate):
     """If have not seen accuracy improvement in delay epochs, then divide
     learning rate by 10
@@ -128,7 +130,7 @@ def main(args):
 
     ##### BUILD MODEL #####
     ## Placeholders
-    x = tf.placeholder(tf.float32, [args.batch_size,784], name='x')
+    x = tf.placeholder(tf.float32, [args.batch_size, 784], name='x')
     y = tf.placeholder(tf.int64, [args.batch_size], name='y')
     learning_rate = tf.placeholder(tf.float32, name='learning_rate')
     train_phase = tf.placeholder(tf.bool, name='train_phase')
@@ -148,7 +150,7 @@ def main(args):
     # We precondition the phases, for faster descent, in the same way as biases
     for g, v in grads_and_vars:
         if 'psi' in v.name:
-            g = args.phase_preconditioner*g
+            g = args.phase_preconditioner * g
         modified_gvs.append((g, v))
     train_op = optim.apply_gradients(modified_gvs)
 
@@ -163,7 +165,7 @@ def main(args):
     lr = args.learning_rate
     saver = tf.train.Saver()
     sess = tf.Session(config=config)
-    sess.run([init_global, init_local], feed_dict={train_phase : True})
+    sess.run([init_global, init_local], feed_dict={train_phase: True})
 
     start = time.time()
     epoch = 0
@@ -181,10 +183,10 @@ def main(args):
             __, loss_, accuracy_ = sess.run([train_op, loss, accuracy], feed_dict=feed_dict)
             train_loss += loss_
             train_acc += accuracy_
-            sys.stdout.write('{}/{}\r'.format(i, data['train_x'].shape[0]/args.batch_size))
+            sys.stdout.write('{}/{}\r'.format(i, data['train_x'].shape[0] / args.batch_size))
             sys.stdout.flush()
-        train_loss /= (i+1.)
-        train_acc /= (i+1.)
+        train_loss /= (i + 1.)
+        train_acc /= (i + 1.)
 
         if not args.combine_train_val:
             batcher = minibatcher(data['valid_x'], data['valid_y'], args.batch_size)
@@ -195,12 +197,16 @@ def main(args):
                 valid_acc += accuracy_
                 sys.stdout.write('Validating\r')
                 sys.stdout.flush()
-            valid_acc /= (i+1.)
-            print('[{:04d} | {:0.1f}] Loss: {:04f}, Train Acc.: {:04f}, Validation Acc.: {:04f}, Learning rate: {:.2e}'.format(epoch,
-                                                                                                                               time.time()-start, train_loss, train_acc, valid_acc, lr))
+            valid_acc /= (i + 1.)
+            print(
+                '[{:04d} | {:0.1f}] Loss: {:04f}, Train Acc.: {:04f}, Validation Acc.: {:04f}, Learning rate: {:.2e}'.format(
+                    epoch,
+                    time.time() - start, train_loss, train_acc, valid_acc, lr))
         else:
             print('[{:04d} | {:0.1f}] Loss: {:04f}, Train Acc.: {:04f}, Learning rate: {:.2e}'.format(epoch,
-                                                                                                      time.time()-start, train_loss, train_acc, lr))
+                                                                                                      time.time() - start,
+                                                                                                      train_loss,
+                                                                                                      train_acc, lr))
 
         # Save model
         if epoch % 10 == 0:
@@ -208,7 +214,7 @@ def main(args):
             print('Model saved')
 
         # Updates to the training scheme
-        #best, counter, lr = get_learning_rate(args, valid_acc, best, counter, lr)
+        # best, counter, lr = get_learning_rate(args, valid_acc, best, counter, lr)
         lr = args.learning_rate * np.power(0.1, epoch / 50)
         epoch += 1
 
@@ -221,7 +227,7 @@ def main(args):
         test_acc += accuracy_
         sys.stdout.write('Testing\r')
         sys.stdout.flush()
-    test_acc /= (i+1.)
+    test_acc /= (i + 1.)
 
     print('Test Acc.: {:04f}'.format(test_acc))
     sess.close()
@@ -231,42 +237,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--data_dir", help="data directory", default='./data')
     parser.add_argument("--default_settings", help="use default settings", type=bool, default=True)
-    parser.add_argument("--combine_train_val", help="combine the training and validation sets for testing", type=bool, default=False)
+    parser.add_argument("--combine_train_val", help="combine the training and validation sets for testing", type=bool,
+                        default=False)
     main(parser.parse_args())
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -10,8 +10,8 @@ import tensorflow as tf
 from harmonic_network_ops import *
 
 
-def conv2d(x, n_channels, ksize, strides=(1,1,1,1), padding='VALID', phase=True,
-             max_order=1, stddev=0.4, n_rings=None, name='conv2d'):
+def conv2d(x, n_channels, ksize, strides=(1, 1, 1, 1), padding='VALID', phase=True,
+           max_order=1, stddev=0.4, n_rings=None, name='conv2d'):
     """Harmonic Convolution lite
 
     x: input tf tensor, shape [batchsize,height,width,order,complex,channels],
@@ -30,9 +30,9 @@ def conv2d(x, n_channels, ksize, strides=(1,1,1,1), padding='VALID', phase=True,
     """
     xsh = x.get_shape().as_list()
     shape = [ksize, ksize, xsh[5], n_channels]
-    Q = get_weights_dict(shape, max_order, std_mult=stddev, n_rings=n_rings, name='W'+name)
+    Q = get_weights_dict(shape, max_order, std_mult=stddev, n_rings=n_rings, name='W' + name)
     if phase == True:
-        P = get_phase_dict(xsh[5], n_channels, max_order, name='phase'+name)
+        P = get_phase_dict(xsh[5], n_channels, max_order, name='phase' + name)
     else:
         P = None
     W = get_filters(Q, filter_size=ksize, P=P, n_rings=n_rings)
@@ -51,7 +51,7 @@ def non_linearity(x, fnc=tf.nn.relu, eps=1e-4, name='nl'):
     return h_nonlin(x, fnc, eps=eps, name=name)
 
 
-def mean_pool(x, ksize=(1,1,1,1), strides=(1,1,1,1), name='mp'):
+def mean_pool(x, ksize=(1, 1, 1, 1), strides=(1, 1, 1, 1), name='mp'):
     """Mean pooling"""
     with tf.name_scope(name) as scope:
         return mean_pooling(x, ksize=ksize, strides=strides)
@@ -70,7 +70,7 @@ def sum_magnitudes(x, eps=1e-12, keep_dims=True):
     keep_dims: whether to collapse summed dimensions (default True)
     """
     R = tf.reduce_sum(tf.square(x), axis=[4], keep_dims=keep_dims)
-    return tf.reduce_sum(tf.sqrt(tf.maximum(R,eps)), axis=[3], keep_dims=keep_dims)
+    return tf.reduce_sum(tf.sqrt(tf.maximum(R, eps)), axis=[3], keep_dims=keep_dims)
 
 
 def stack_magnitudes(X, eps=1e-12, keep_dims=True):
@@ -82,4 +82,4 @@ def stack_magnitudes(X, eps=1e-12, keep_dims=True):
     eps: regularization since grad |Z| is infinite at zero (default 1e-12)
     """
     R = tf.reduce_sum(tf.square(X), axis=[4], keep_dims=keep_dims)
-    return tf.sqrt(tf.maximum(R,eps))
+    return tf.sqrt(tf.maximum(R, eps))
